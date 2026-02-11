@@ -1,0 +1,83 @@
+package team4;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Scanner;
+import java.util.Set;
+
+import org.junit.jupiter.api.Test;
+
+import booking.Seat;
+
+public class SeatTest {
+
+    private Scanner makeScanner(String input) {
+        return new Scanner(new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8)));
+    }
+
+    @Test
+    void testInvalidTicketsNonInt() {
+        Seat seat = new Seat();
+        assertFalse(seat.selectSeats(makeScanner("abc\n")));
+    }
+
+    @Test
+    void testInvalidTicketCountZero() {
+        Seat seat = new Seat();
+        assertFalse(seat.selectSeats(makeScanner("0\n")));
+    }
+
+    @Test
+    void testTooManyTickets() {
+        Seat seat = new Seat();
+        assertFalse(seat.selectSeats(makeScanner("11\n")));
+    }
+
+    @Test
+    void testEmptySeatNumbers() {
+        Seat seat = new Seat();
+        String input = "2\n\n";
+        assertFalse(seat.selectSeats(makeScanner(input)));
+    }
+
+    @Test
+    void testMismatchTicketAndSeats() {
+        Seat seat = new Seat();
+        // 2 tickets but only 1 seat provided
+        String input = "2\nA1\n";
+        assertFalse(seat.selectSeats(makeScanner(input)));
+    }
+
+    @Test
+    void testInvalidSeatFormat() {
+        Seat seat = new Seat();
+        // A0 is invalid because seats are 1-99
+        String input = "2\nA0,A2\n";
+        assertFalse(seat.selectSeats(makeScanner(input)));
+    }
+
+    @Test
+    void testDuplicateSeats() {
+        Seat seat = new Seat();
+        String input = "2\nA1,A1\n";
+        assertFalse(seat.selectSeats(makeScanner(input)));
+    }
+
+    @Test
+    void testValidSeats() {
+        Seat seat = new Seat();
+        String input = "2\n a1 , B12 \n";
+        assertTrue(seat.selectSeats(makeScanner(input)));
+        assertEquals(2, seat.ticketCount);
+
+        // seat.seatNumbers is a comma-separated string; order is not guaranteed (HashSet used internally)
+        Set<String> actual = new HashSet<>(Arrays.asList(seat.seatNumbers.split(",")));
+        assertTrue(actual.contains("A1"));
+        assertTrue(actual.contains("B12"));
+        assertEquals(2, actual.size());
+    }
+}
