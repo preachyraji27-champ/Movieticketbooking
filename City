@@ -1,0 +1,34 @@
+package booking;
+
+import java.util.Scanner;
+
+public class City {
+    public String cityName;
+
+    public boolean selectCity(Scanner sc) {
+        System.out.println("\nSelect City:");
+        System.out.println("1. Chennai");
+        System.out.println("2. Bangalore");
+        System.out.println("3. Hyderabad");
+        System.out.print("Enter choice: ");
+
+        if (!sc.hasNextInt()) {
+            System.out.println("Invalid input. Please enter a number 1-3.");
+            sc.nextLine();
+            return false;
+        }
+        int choice = sc.nextInt();
+        sc.nextLine(); // consume newline
+
+        switch (choice) {
+            case 1: cityName = "Chennai"; break;
+            case 2: cityName = "Bangalore"; break;
+            case 3: cityName = "Hyderabad"; break;
+            default:
+                System.out.println(" Invalid city selection (choose 1-3).");
+                return false;
+        }
+        System.out.println("Selected City: " + cityName);
+        return true;
+    }
+}
