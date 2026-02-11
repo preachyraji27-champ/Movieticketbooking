@@ -1,0 +1,75 @@
+package team4;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import booking.City;
+import booking.Movie;
+import booking.Seat;
+import booking.Show;
+import booking.Snack;
+import booking.Theater;
+import booking.Ticket;
+
+class TicketTest {
+
+    private final PrintStream originalOut = System.out;
+    private ByteArrayOutputStream outContent;
+
+    @BeforeEach
+    void setUpStreams() throws Exception {
+        outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent, true, StandardCharsets.UTF_8));
+    }
+
+    @AfterEach
+    void restoreStreams() {
+        System.setOut(originalOut);
+    }
+
+    @Test
+    void testPrintTicket() {
+        City city = new City();
+        city.cityName = "Chennai";
+
+        Movie movie = new Movie();
+        movie.movieName = "Leo";
+
+        Theater theater = new Theater();
+        theater.theaterName = "PVR Cinemas";
+
+        Show show = new Show();
+        show.date = "02-06-2026";
+        show.time = "6:00 PM";
+        show.screenType = "AC";
+
+        Seat seat = new Seat();
+        seat.ticketCount = 2;
+        seat.seatNumbers = "A1,B12";
+
+        Snack snack = new Snack();
+        snack.snackDetails = "Popcorn + Coke";
+        snack.snackCost = 200;
+
+        Ticket ticket = new Ticket(city, movie, theater, show, seat, snack);
+        ticket.printTicket();
+
+        String out = outContent.toString(StandardCharsets.UTF_8);
+        assertTrue(out.contains(" Ticket Confirmed"));
+        assertTrue(out.contains("City   : Chennai"));
+        assertTrue(out.contains("Movie  : Leo"));
+        assertTrue(out.contains("Theater: PVR Cinemas"));
+        assertTrue(out.contains("Date   : 02-06-2026"));
+        assertTrue(out.contains("Time   : 6:00 PM"));
+        assertTrue(out.contains("Screen : AC"));
+        assertTrue(out.contains("Seats  : A1,B12"));
+        assertTrue(out.contains("Snacks : Popcorn + Coke"));
+    }
+}
