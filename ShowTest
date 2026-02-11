@@ -1,0 +1,87 @@
+ package team4;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Scanner;
+
+import org.junit.jupiter.api.Test;
+
+import booking.Show;
+
+public class ShowTest {
+
+    private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("MM-dd-uuuu");
+
+    private String format(LocalDate d) {
+        return d.format(FMT);
+    }
+
+    private Scanner makeScanner(String input) {
+        return new Scanner(new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8)));
+    }
+
+    @Test
+    void testInvalidDateFormat() {
+        Show show = new Show();
+        // wrong format (expected MM-dd-uuuu)
+        assertFalse(show.selectShow(makeScanner("2026-02-06\n")));
+    }
+
+    @Test
+    void testPastDate() {
+        Show show = new Show();
+        String yesterday = format(LocalDate.now().minusDays(1));
+        // since date is past, the method returns false immediately
+        assertFalse(show.selectShow(makeScanner(yesterday + "\n")));
+    }
+
+    @Test
+    void testValidFutureDate_TimeAndScreen() {
+        Show show = new Show();
+        String tomorrow = format(LocalDate.now().plusDays(1));
+
+        // date (valid, future)
+        // time choice: 1 (10:00 AM)
+        // screen: 1 (AC)
+        String input = String.join("\n", tomorrow, "1", "1") + "\n";
+        assertTrue(show.selectShow(makeScanner(input)));
+
+        assertEquals(tomorrow, show.date);
+        assertEquals("10:00 AM", show.time);
+        assertEquals("AC", show.screenType);
+    }
+
+    @Test
+    void testInvalidTimeChoice() {
+        Show show = new Show();
+        String tomorrow = format(LocalDate.now().plusDays(1));
+
+        // invalid time choice 9
+        String input = String.join("\n", tomorrow, "9") + "\n";
+        assertFalse(show.selectShow(makeScanner(input)));
+    }
+
+    @Test
+    void testNonIntegerTime() {
+        Show show = new Show();
+        String tomorrow = format(LocalDate.now().plusDays(1));
+
+        // non-integer time selection
+        String input = String.join("\n", tomorrow, "abc") + "\n";
+        assertFalse(show.selectShow(makeScanner(input)));
+    }
+
+    @Test
+    void testInvalidScreenChoice() {
+        Show show = new Show();
+        String tomorrow = format(LocalDate.now().plusDays(1));
+
+        // valid date, valid time=1, invalid screen=9
+        String input = String.join("\n", tomorrow, "1", "9") + "\n";
+        assertFalse(show.selectShow(makeScanner(input)));
+    }
+}
