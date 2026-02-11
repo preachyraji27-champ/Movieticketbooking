@@ -1,0 +1,42 @@
+package team4;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
+
+import org.junit.jupiter.api.Test;
+
+import booking.Payment;
+
+public class PaymentTest {
+
+    private Scanner makeScanner(String input) {
+        return new Scanner(new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8)));
+    }
+
+    @Test
+    void testValidPayments() {
+        Payment p = new Payment();
+        assertTrue(p.makePayment(makeScanner("1\n"))); // UPI
+        p = new Payment();
+        assertTrue(p.makePayment(makeScanner("2\n"))); // Credit
+        p = new Payment();
+        assertTrue(p.makePayment(makeScanner("3\n"))); // Debit
+    }
+
+    @Test
+    void testInvalidPaymentNonInt() {
+        Payment p = new Payment();
+        assertFalse(p.makePayment(makeScanner("upi\n")));
+    }
+
+    @Test
+    void testInvalidPaymentOutOfRange() {
+        Payment p = new Payment();
+        assertFalse(p.makePayment(makeScanner("0\n")));
+        p = new Payment();
+        assertFalse(p.makePayment(makeScanner("4\n")));
+    }
+}
