@@ -1,0 +1,45 @@
+package team4;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
+
+import org.junit.jupiter.api.Test;
+
+import booking.Movie;
+
+public class MovieTest {
+
+    private Scanner makeScanner(String input) {
+        return new Scanner(new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8)));
+    }
+
+    @Test
+    void testValidMovieSelection() {
+        Movie movie = new Movie();
+        assertTrue(movie.selectMovie(makeScanner("1\n")));
+        assertEquals("Leo", movie.movieName);
+
+        movie = new Movie();
+        assertTrue(movie.selectMovie(makeScanner("2\n")));
+        assertEquals("Jawan", movie.movieName);
+
+        movie = new Movie();
+        assertTrue(movie.selectMovie(makeScanner("3\n")));
+        assertEquals("Avatar 2", movie.movieName);
+    }
+
+    @Test
+    void testInvalidMovieSelectionNonInt() {
+        Movie movie = new Movie();
+        assertFalse(movie.selectMovie(makeScanner("xyz\n")));
+    }
+
+    @Test
+    void testInvalidMovieSelectionOutOfRange() {
+        Movie movie = new Movie();
+        assertFalse(movie.selectMovie(makeScanner("0\n")));
+    }
+}
