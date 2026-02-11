@@ -1,0 +1,68 @@
+package booking;
+
+import java.util.Scanner;
+
+public class MainApp {
+    public static void main(String[] args) {
+        try (Scanner sc = new Scanner(System.in)) {
+            System.out.println(" Welcome to Movie Ticket Booking System ");
+
+            // City Selection
+            City city = new City();
+            if (!city.selectCity(sc)) {
+                cancel();
+                return;
+            }
+
+            // Movie Selection
+            Movie movie = new Movie();
+            if (!movie.selectMovie(sc)) {
+                cancel();
+                return;
+            }
+
+            // Theater Selection
+            Theater theater = new Theater();
+            if (!theater.selectTheater(sc)) {
+                cancel();
+                return;
+            }
+
+            // Show Selection (date must be today or future; time validation)
+            Show show = new Show();
+            if (!show.selectShow(sc)) {
+                cancel();
+                return;
+            }
+
+            // Seat Selection
+            Seat seat = new Seat();
+            if (!seat.selectSeats(sc)) {
+                cancel();
+                return;
+            }
+
+            // Snack Selection
+            Snack snack = new Snack();
+            if (!snack.selectSnacks(sc)) {
+                cancel();
+                return;
+            }
+
+            // Payment
+            Payment payment = new Payment();
+            if (!payment.makePayment(sc)) {
+                cancel();
+                return;
+            }
+
+            // Ticket Confirmation
+            Ticket ticket = new Ticket(city, movie, theater, show, seat, snack);
+            ticket.printTicket();
+        }
+    }
+
+    private static void cancel() {
+        System.out.println(" Booking cancelled due to invalid input. Please restart the booking.\n");
+    }
+}
