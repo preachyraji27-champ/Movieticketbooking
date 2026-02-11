@@ -1,0 +1,48 @@
+package team4;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
+
+import org.junit.jupiter.api.Test;
+
+import booking.Snack;
+
+public class SnackTest {
+
+    private Scanner makeScanner(String input) {
+        return new Scanner(new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8)));
+    }
+
+    @Test
+    void testValidSnackSelections() {
+        Snack s = new Snack();
+        assertTrue(s.selectSnacks(makeScanner("1\n")));
+        assertEquals("Popcorn + Coke", s.snackDetails);
+        assertEquals(200, s.snackCost);
+
+        s = new Snack();
+        assertTrue(s.selectSnacks(makeScanner("2\n")));
+        assertEquals("Nachos + Pepsi", s.snackDetails);
+        assertEquals(150, s.snackCost);
+
+        s = new Snack();
+        assertTrue(s.selectSnacks(makeScanner("3\n")));
+        assertEquals("No Snacks", s.snackDetails);
+        assertEquals(0, s.snackCost);
+    }
+
+    @Test
+    void testInvalidSnackSelectionNonInt() {
+        Snack s = new Snack();
+        assertFalse(s.selectSnacks(makeScanner("x\n")));
+    }
+
+    @Test
+    void testInvalidSnackSelectionOutOfRange() {
+        Snack s = new Snack();
+        assertFalse(s.selectSnacks(makeScanner("9\n")));
+    }
+}
