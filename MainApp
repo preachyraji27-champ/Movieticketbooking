@@ -1,0 +1,75 @@
+package team4;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import booking.MainApp;
+
+class MainAppIntegrationTest {
+
+    private final PrintStream originalOut = System.out;
+    private final java.io.InputStream originalIn = System.in;
+
+    private ByteArrayOutputStream outContent;
+
+    @BeforeEach
+    void setUpStreams() throws Exception {
+        outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent, true, StandardCharsets.UTF_8));
+    }
+
+    @AfterEach
+    void restoreStreams() {
+        System.setOut(originalOut);
+        System.setIn(originalIn);
+    }
+
+    private String formatTomorrow() {
+        return LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("MM-dd-uuuu"));
+    }
+
+    @Test
+    void testHappyPathBookingFlow() {
+        String tomorrow = formatTomorrow();
+
+        // Inputs in order:
+        // City=1, Movie=2, Theater=3, Date=tomorrow, Time=2, Screen=1,
+        // Tickets=3, Seats=A1,A2,A3, Snacks=3, Payment=1
+        String inputs = String.join("\n",
+            "1",            // City -> Chennai
+            "2",            // Movie -> Jawan
+            "3",            // Theater -> Cinepolis
+            tomorrow,       // Show date
+            "2",            // Show time -> 2:00 PM
+            "1",            // Screen -> AC
+            "3",            // Ticket count
+            "A1,A2,A3",     // Seats
+            "3",            // No Snacks
+            "1"             // Payment -> UPI
+        ) + "\n";
+
+        System.setIn(new ByteArrayInputStream(inputs.getBytes(StandardCharsets.UTF_8)));
+
+        // Run main
+        MainApp.main(new String[0]);
+
+        String out = outContent.toString(StandardCharsets.UTF_8);
+        assertTrue(out.contains("Ticket Confirmed"));
+        assertTrue(out.contains("City   : Chennai"));
+        assertTrue(out.contains("Movie  : Jawan"));
+        assertTrue(out.contains("Theater: Cinepolis"));
+        assertTrue(out.contains("Time   : 2:00 PM"));
+        assertTrue(out.contains("Screen : AC"));
+        assertTrue(out.contains("Seats  :"));
+    }
+}
