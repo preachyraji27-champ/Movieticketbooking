@@ -1,0 +1,32 @@
+package booking;
+
+import java.util.Scanner;
+
+public class Payment {
+
+    public boolean makePayment(Scanner sc) {
+        System.out.println("\nSelect Payment Method:");
+        System.out.println("1. UPI");
+        System.out.println("2. Credit Card");
+        System.out.println("3. Debit Card");
+        System.out.print("Enter choice: ");
+
+        if (!sc.hasNextInt()) {
+            System.out.println(" Invalid input. Please enter a number 1-3.");
+            sc.nextLine();
+            return false;
+        }
+        int choice = sc.nextInt();
+        sc.nextLine();
+
+        if (choice < 1 || choice > 3) {
+            System.out.println(" Invalid payment selection (choose 1-3).");
+            return false;
+        }
+
+        System.out.println("Processing payment...");
+        // Simulated success for demo
+        System.out.println(" Payment Successful!");
+        return true;
+    }
+}
