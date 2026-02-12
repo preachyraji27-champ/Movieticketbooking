@@ -1,0 +1,43 @@
+package booking;
+
+import java.util.Scanner;
+
+public class Snack {
+    public String snackDetails;
+    public int snackCost;
+
+    public boolean selectSnacks(Scanner sc) {
+        System.out.println("\nAdd Snacks?");
+        System.out.println("1. Popcorn + Coke (₹200)");
+        System.out.println("2. Nachos + Pepsi (₹150)");
+        System.out.println("3. No Snacks");
+        System.out.print("Enter choice: ");
+
+        if (!sc.hasNextInt()) {
+            System.out.println(" Invalid input. Please enter a number 1-3.");
+            sc.nextLine();
+            return false;
+        }
+        int choice = sc.nextInt();
+        sc.nextLine();
+
+        switch (choice) {
+            case 1:
+                snackDetails = "Popcorn + Coke";
+                snackCost = 200;
+                break;
+            case 2:
+                snackDetails = "Nachos + Pepsi";
+                snackCost = 150;
+                break;
+            case 3:
+                snackDetails = "No Snacks";
+                snackCost = 0;
+                break;
+            default:
+                System.out.println(" Invalid snack selection (choose 1-3).");
+                return false;
+        }
+        return true;
+    }
+}
