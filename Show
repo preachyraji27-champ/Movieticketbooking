@@ -1,0 +1,119 @@
+package booking;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
+import java.time.format.DateTimeParseException;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class Show {
+    public String date;        // MM-dd-yyyy
+    public String time;        // "10:00 AM", etc.
+    public String screenType;  // "AC" or "Non-AC"
+
+    // ✅ IMPORTANT:
+    // This formatter uses MM-dd-yyyy (e.g., 01-06-2026 = Jan 06, 2026).
+    // That means 01-06-2026 is treated as a PAST date if today is 02-06-2026 (Feb 06, 2026).
+    private static final DateTimeFormatter DATE_FMT =
+            DateTimeFormatter.ofPattern("MM-dd-uuuu").withResolverStyle(ResolverStyle.STRICT);
+
+    // Use your local timezone so "today" is correct for you
+    private static final ZoneId ZONE_ID = ZoneId.systemDefault();
+
+    private static final Map<Integer, String> TIME_LABELS = new LinkedHashMap<>();
+    private static final Map<Integer, LocalTime> TIME_VALUES = new LinkedHashMap<>();
+
+    static {
+        TIME_LABELS.put(1, "10:00 AM");
+        TIME_LABELS.put(2, "2:00 PM");
+        TIME_LABELS.put(3, "6:00 PM");
+        TIME_LABELS.put(4, "10:00 PM");
+
+        TIME_VALUES.put(1, LocalTime.of(10, 0));
+        TIME_VALUES.put(2, LocalTime.of(14, 0));
+        TIME_VALUES.put(3, LocalTime.of(18, 0));
+        TIME_VALUES.put(4, LocalTime.of(22, 0));
+    }
+
+    public boolean selectShow(Scanner sc) {
+        // --- DATE ---
+        System.out.print("\nEnter Show Date (MM-dd-yyyy): ");
+        String inputDate = sc.nextLine().trim();
+
+        LocalDate showDate;
+        try {
+            showDate = LocalDate.parse(inputDate, DATE_FMT);
+        } catch (DateTimeParseException e) {
+            System.out.println(" Invalid date format. Please use MM-dd-yyyy (e.g., 02-06-2026).");
+            return false; // stop booking
+        }
+
+        LocalDate today = LocalDate.now(ZONE_ID);
+        if (showDate.isBefore(today)) {
+            System.out.println(" Selected date is in the past. Please choose today or a future date.");
+            return false; // stop booking
+        }
+
+        // --- TIME ---
+        System.out.println("Select Show Time:");
+        System.out.println("1. 10:00 AM");
+        System.out.println("2. 2:00 PM");
+        System.out.println("3. 6:00 PM");
+        System.out.println("4. 10:00 PM");
+        System.out.print("Enter choice: ");
+
+        if (!sc.hasNextInt()) {
+            System.out.println(" Invalid input. Please enter a number 1-4.");
+            sc.nextLine(); // flush invalid token
+            return false;  // stop booking
+        }
+        int timeChoice = sc.nextInt();
+        sc.nextLine(); // consume trailing newline
+
+        if (!TIME_LABELS.containsKey(timeChoice)) {
+            System.out.println(" Invalid time selection (choose 1-4).");
+            return false; // stop booking
+        }
+
+        LocalTime selectedTime = TIME_VALUES.get(timeChoice);
+        LocalTime now = LocalTime.now(ZONE_ID);
+
+        // If show date is today, selected time must not be earlier than current time
+        if (showDate.isEqual(today) && selectedTime.isBefore(now)) {
+            System.out.println(" Selected time is earlier than the current time. Please choose a later show time.");
+            return false; // stop booking
+        }
+
+        this.date = inputDate;
+        this.time = TIME_LABELS.get(timeChoice);
+
+        // --- SCREEN TYPE ---
+        System.out.println("Select Screen Type:");
+        System.out.println("1. AC");
+        System.out.println("2. Non-AC");
+        System.out.print("Enter choice: ");
+
+        if (!sc.hasNextInt()) {
+            System.out.println(" Invalid input. Please enter 1 or 2.");
+            sc.nextLine(); // flush invalid token
+            return false;  // stop booking
+        }
+        int screenChoice = sc.nextInt();
+        sc.nextLine(); // consume trailing newline
+
+        if (screenChoice == 1) {
+            screenType = "AC";
+        } else if (screenChoice == 2) {
+            screenType = "Non-AC";
+        } else {
+            System.out.println(" Invalid screen selection (choose 1 or 2).");
+            return false; // stop booking
+        }
+
+        return true; // success
+    }
+}
