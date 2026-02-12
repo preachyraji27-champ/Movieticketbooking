@@ -2,19 +2,18 @@ package booking;
 
 import java.util.Scanner;
 
-public class Snack {
-    public String snackDetails;
-    public int snackCost;
+public class Theater {
+    public String theaterName;
 
-    public boolean selectSnacks(Scanner sc) {
-        System.out.println("\nAdd Snacks?");
-        System.out.println("1. Popcorn + Coke (₹200)");
-        System.out.println("2. Nachos + Pepsi (₹150)");
-        System.out.println("3. No Snacks");
+    public boolean selectTheater(Scanner sc) {
+        System.out.println("\nSelect Theater:");
+        System.out.println("1. PVR Cinemas");
+        System.out.println("2. INOX");
+        System.out.println("3. Cinepolis");
         System.out.print("Enter choice: ");
 
         if (!sc.hasNextInt()) {
-            System.out.println(" Invalid input. Please enter a number 1-3.");
+            System.out.println("Invalid input. Please enter a number 1-3.");
             sc.nextLine();
             return false;
         }
@@ -22,22 +21,14 @@ public class Snack {
         sc.nextLine();
 
         switch (choice) {
-            case 1:
-                snackDetails = "Popcorn + Coke";
-                snackCost = 200;
-                break;
-            case 2:
-                snackDetails = "Nachos + Pepsi";
-                snackCost = 150;
-                break;
-            case 3:
-                snackDetails = "No Snacks";
-                snackCost = 0;
-                break;
+            case 1: theaterName = "PVR Cinemas"; break;
+            case 2: theaterName = "INOX"; break;
+            case 3: theaterName = "Cinepolis"; break;
             default:
-                System.out.println(" Invalid snack selection (choose 1-3).");
+                System.out.println(" Invalid theater selection (choose 1-3).");
                 return false;
         }
+        System.out.println("Selected Theater: " + theaterName);
         return true;
     }
 }
