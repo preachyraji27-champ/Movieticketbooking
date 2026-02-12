@@ -1,0 +1,36 @@
+package booking;
+
+public class Ticket {
+    City city;
+    Movie movie;
+    Theater theater;
+    Show show;
+    Seat seat;
+    Snack snack;
+
+    public Ticket(City city, Movie movie, Theater theater,
+                  Show show, Seat seat, Snack snack) {
+        this.city = city;
+        this.movie = movie;
+        this.theater = theater;
+        this.show = show;
+        this.seat = seat;
+        this.snack = snack;
+    }
+
+    public void printTicket() {
+        System.out.println("\n Ticket Confirmed");
+        System.out.println("----------------------------");
+        System.out.println("City   : " + city.cityName);
+        System.out.println("Movie  : " + movie.movieName);
+        System.out.println("Theater: " + theater.theaterName);
+        System.out.println("Date   : " + show.date);
+        System.out.println("Time   : " + show.time);
+        System.out.println("Screen : " + show.screenType);
+        System.out.println("Seats  : " + seat.seatNumbers);
+        System.out.println("Snacks : " + snack.snackDetails);
+        System.out.println("Enjoy your movie! ");
+    }
+
+	 
+}
